@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, Float
+import sqlalchemy
 
 from database import Base
 
@@ -6,10 +6,10 @@ from database import Base
 class Recipe(Base):
     __tablename__ = 'recipe'
 
-    recipe_id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String, nullable=False)
-    views = Column(Integer, default=0, nullable=False)
-    cooking_time = Column(Float, nullable=False)
-    ingredients = Column(Text, nullable=False)
-    description = Column(Text, nullable=True)
+    recipe_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    views = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=False)
+    cooking_time = sqlalchemy.Column(sqlalchemy.Float, nullable=False)
+    ingredients = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
+    description = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
 

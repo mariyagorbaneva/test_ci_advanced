@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+
 # Блюдо
 class RecipeIn(BaseModel):
     title: str
