@@ -10,43 +10,43 @@ on:
 
 jobs:
   lint_and_test:
-    #runs-on: windows-latest
     runs-on: ubuntu-latest
 
     steps:
       # Склонировать репозиторий
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Установить Python
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12.3'
+          cache: 'pip'
 
       # Установить зависимости
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          ip install --upgrade pydantic-core
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade pydantic-core
+          python -m pip install -r requirements.txt
 
-      # Запуск линтеров: mypy
+      # Запуск линтеров mypy
       - name: Run mypy
         run: |
           mypy .
 
-      # Запуск линтеров: black
+      # Запуск линтеров black
       - name: Run black
         run: |
           black --diff --check .
 
-      # Запуск линтеров: isort
+      # Запуск линтеров isort
       - name: Run isort
         run: |
           isort --check-only .
 
-      # Запуск линтеров: flake8
+      # Запуск линтеров flake8
       - name: Run flake8
         run: |
           flake8 .
@@ -55,3 +55,4 @@ jobs:
       - name: Run pytest
         run: |
           pytest --maxfail=1 --disable-warnings
+
