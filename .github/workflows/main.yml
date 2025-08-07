@@ -10,7 +10,8 @@ on:
 
 jobs:
   lint_and_test:
-    runs-on: windows-latest
+    #runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       # Склонировать репозиторий
@@ -27,6 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          ip install --upgrade pydantic-core
           pip install -r requirements.txt
 
       # Запуск линтеров: mypy
