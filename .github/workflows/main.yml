@@ -34,7 +34,7 @@ jobs:
       # Запуск линтеров mypy
       - name: Run mypy
         run: |
-          mypy .
+          mypy --python-version 3.12 .
 
       # Запуск линтеров black
       - name: Run black
@@ -55,4 +55,3 @@ jobs:
       - name: Run pytest
         run: |
           pytest --maxfail=1 --disable-warnings
-
