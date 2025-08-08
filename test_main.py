@@ -1,7 +1,6 @@
 import pytest
 from httpx import AsyncClient
 
-from database import DB_URL
 from main import app
 
 
