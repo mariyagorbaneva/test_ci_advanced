@@ -45,7 +45,9 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 .
+          flake8 . --exclude ".venv,venv,env,new_env,
+          .tox,build,dist,.git,__pycache__,
+          .mypy_cache,.pytest_cache,*/site-packages/*"
 
       - name: Run pytest
         run: |
