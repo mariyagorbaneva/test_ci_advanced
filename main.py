@@ -31,7 +31,8 @@ async def get_recipes() -> list[Recipe]:
             result = await session.execute(
                 select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
             )
-            return result.scalars().all()
+            # Явно приводим к list, чтобы mypy видел точный тип list[Recipe]
+            return list(result.scalars().all())
 
 
 @app.get('/recipes/{recipe_id}', response_model=RecipeOut)
