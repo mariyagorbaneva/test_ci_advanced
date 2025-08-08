@@ -8,9 +8,9 @@ from main import app
 @pytest.mark.asyncio
 async def test_get_recipes():
     async with LifespanManager(app):
-        transport = ASGITransport(app=app)
         async with AsyncClient(
-            transport=transport, base_url="http://testserver"
+            transport=ASGITransport(app=app),
+            base_url="http://testserver",
         ) as client:
             response = await client.get("/recipes/")
             assert response.status_code == 200
@@ -26,9 +26,9 @@ async def test_create_recipe():
         "description": "Классический рецепт борща",
     }
     async with LifespanManager(app):
-        transport = ASGITransport(app=app)
         async with AsyncClient(
-            transport=transport, base_url="http://testserver"
+            transport=ASGITransport(app=app),
+            base_url="http://testserver",
         ) as client:
             response = await client.post("/recipes/", json=new_recipe)
             assert response.status_code == 200
@@ -46,14 +46,16 @@ async def test_get_recipe_detail():
         "description": "Освежающее летнее блюдо",
     }
     async with LifespanManager(app):
-        transport = ASGITransport(app=app)
         async with AsyncClient(
-            transport=transport, base_url="http://testserver"
+            transport=ASGITransport(app=app),
+            base_url="http://testserver",
         ) as client:
             create_response = await client.post("/recipes/", json=recipe_data)
             assert create_response.status_code == 200
             response_data = create_response.json()
-            recipe_id = response_data.get("recipe_id")
+
+            # Поддержка обоих вариантов имени ключа идентификатора
+            recipe_id = response_data.get("id") or response_data.get("recipe_id")
             assert recipe_id is not None
 
             detail_response = await client.get(f"/recipes/{recipe_id}")
