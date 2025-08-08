@@ -41,7 +41,7 @@ jobs:
 
       - name: Run isort
         run: |
-          isort --check-only .
+          isort --diff --check-only .
 
       - name: Run flake8
         run: |
