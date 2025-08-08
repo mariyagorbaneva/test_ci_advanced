@@ -32,8 +32,7 @@ async def get_recipes() -> list[Recipe]:
     async with SessionLocal() as session:
         async with session.begin():
             result = await session.execute(
-                select(Recipe).order_by(Recipe.views.desc(),
-                                        Recipe.cooking_time)
+                select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
             )
             # Явно приводим к list, чтобы mypy видел точный тип list[Recipe]
             return list(result.scalars().all())
