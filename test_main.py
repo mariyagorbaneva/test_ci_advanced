@@ -6,7 +6,8 @@ from main import app
 
 @pytest.mark.asyncio
 async def test_get_recipes():
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app,
+                           base_url="http://127.0.0.1:8000") as client:
         response = await client.get("/recipes/")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
@@ -20,7 +21,8 @@ async def test_create_recipe():
         "ingredients": "Свекла, картофель, капуста, морковь, лук",
         "description": "Классический рецепт борща",
     }
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app,
+                           base_url="http://127.0.0.1:8000") as client:
         response = await client.post("/recipes/", json=new_recipe)
         assert response.status_code == 200
         new_recipe = response.json()
@@ -37,7 +39,8 @@ async def test_get_recipe_detail():
         "description": "Освежающее летнее блюдо",
     }
 
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app,
+                           base_url="http://127.0.0.1:8000") as client:
         create_response = await client.post("/recipes/", json=recipe_data)
         assert create_response.status_code == 200
         response_data = create_response.json()
