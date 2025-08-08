@@ -4,15 +4,16 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.future import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import async_sessionmaker
+
+import models
+from database import engine
 from models import Recipe
 from schemas import RecipeIn, RecipeOut
-from database import engine
-import models
 
 SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,12 +22,14 @@ async def lifespan(app: FastAPI):
     yield
     await engine.dispose()
 
+
 app = FastAPI(lifespan=lifespan)
 logger = logging.getLogger("app")
 
-@app.get('/recipes/', response_model=List[RecipeOut])
+
+@app.get("/recipes/", response_model=List[RecipeOut])
 async def get_recipes():
-    """Получить список всех рецептов, отсортированных по количеству просмотров и времени приготовления."""
+    """Получить список всех рецептов отсортированных."""
     async with SessionLocal() as session:
         async with session.begin():
             result = await session.execute(
@@ -34,7 +37,8 @@ async def get_recipes():
             )
             return result.scalars().all()
 
-@app.get('/recipes/{recipe_id}', response_model=RecipeOut)
+
+@app.get("/recipes/{recipe_id}", response_model=RecipeOut)
 async def get_recipe_detail(recipe_id: int):
     """Получить детальную информацию о конкретном рецепте по идентификатору."""
     async with SessionLocal() as session:
@@ -50,7 +54,8 @@ async def get_recipe_detail(recipe_id: int):
             # commit не нужен — он произойдёт при выходе из session.begin()
             return recipe
 
-@app.post('/recipes/', response_model=RecipeOut)
+
+@app.post("/recipes/", response_model=RecipeOut)
 async def create_recipe(recipe: RecipeIn):
     """Создать новый рецепт на основе предоставленных данных."""
     new_recipe = Recipe(**recipe.dict())

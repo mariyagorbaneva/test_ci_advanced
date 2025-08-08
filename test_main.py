@@ -1,17 +1,21 @@
 import pytest
-from httpx import ASGITransport, AsyncClient
 from asgi_lifespan import LifespanManager
+from httpx import ASGITransport, AsyncClient
 
 from main import app
+
 
 @pytest.mark.asyncio
 async def test_get_recipes():
     async with LifespanManager(app):
         transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://testserver") as client:
+        async with AsyncClient(
+            transport=transport, base_url="http://testserver"
+        ) as client:
             response = await client.get("/recipes/")
             assert response.status_code == 200
             assert isinstance(response.json(), list)
+
 
 @pytest.mark.asyncio
 async def test_create_recipe():
@@ -23,12 +27,15 @@ async def test_create_recipe():
     }
     async with LifespanManager(app):
         transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://testserver") as client:
+        async with AsyncClient(
+            transport=transport, base_url="http://testserver"
+        ) as client:
             response = await client.post("/recipes/", json=new_recipe)
             assert response.status_code == 200
             data = response.json()
             assert data["title"] == "Борщ"
             assert data["cooking_time"] == 120.0
+
 
 @pytest.mark.asyncio
 async def test_get_recipe_detail():
@@ -40,7 +47,9 @@ async def test_get_recipe_detail():
     }
     async with LifespanManager(app):
         transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://testserver") as client:
+        async with AsyncClient(
+            transport=transport, base_url="http://testserver"
+        ) as client:
             create_response = await client.post("/recipes/", json=recipe_data)
             assert create_response.status_code == 200
             response_data = create_response.json()
