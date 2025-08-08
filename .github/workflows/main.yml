@@ -13,47 +13,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Склонировать репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Установить Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12.3'
           cache: 'pip'
 
-      # Установить зависимости
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install mypy==1.17.1
-          python -m pip install --upgrade pydantic-core
-          python -m pip install -r requirements.txt
-          
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      # Запуск линтеров mypy
       - name: Run mypy
         run: |
           mypy --python-version 3.12 .
 
-      # Запуск линтеров black
       - name: Run black
         run: |
           black --diff --check .
 
-      # Запуск линтеров isort
       - name: Run isort
         run: |
           isort --check-only .
 
-      # Запуск линтеров flake8
       - name: Run flake8
         run: |
           flake8 .
 
-      # Запуск тестов
       - name: Run pytest
         run: |
           pytest --maxfail=1 --disable-warnings
