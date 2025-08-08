@@ -24,7 +24,7 @@ logger = logging.getLogger("app")
 
 
 @app.get('/recipes/', response_model=List[RecipeOut])
-async def get_recipes() -> List[RecipeOut]:
+async def get_recipes() -> list[Recipe]:
     """Получить список всех рецептов, отсортированных по количеству просмотров и времени приготовления."""
     async with SessionLocal() as session:
         async with session.begin():
@@ -35,7 +35,7 @@ async def get_recipes() -> List[RecipeOut]:
 
 
 @app.get('/recipes/{recipe_id}', response_model=RecipeOut)
-async def get_recipe_detail(recipe_id: int) -> RecipeOut:
+async def get_recipe_detail(recipe_id: int) -> Recipe:
     """Получить детальную информацию о конкретном рецепте по идентификатору."""
     async with SessionLocal() as session:
         async with session.begin():
@@ -49,7 +49,7 @@ async def get_recipe_detail(recipe_id: int) -> RecipeOut:
 
 
 @app.post('/recipes/', response_model=RecipeOut)
-async def create_recipe(recipe: RecipeIn) -> RecipeOut:
+async def create_recipe(recipe: RecipeIn) -> Recipe:
     """Создать новый рецепт на основе предоставленных данных."""
     new_recipe = Recipe(**recipe.dict())
     async with SessionLocal() as session:
@@ -61,5 +61,3 @@ async def create_recipe(recipe: RecipeIn) -> RecipeOut:
         except Exception as e:
             logger.error(f"Ошибка создания рецепта: {e}")
             raise HTTPException(status_code=400, detail=str(e))
-
-
