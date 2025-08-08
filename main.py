@@ -11,9 +11,9 @@ from database import engine
 import models
 
 SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     async with engine.begin() as conn:
         await conn.run_sync(models.Base.metadata.create_all)
     yield
@@ -21,30 +21,35 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 logger = logging.getLogger("app")
+
+
 @app.get('/recipes/', response_model=List[RecipeOut])
-async def get_recipes():
+async def get_recipes() -> List[RecipeOut]:
     """Получить список всех рецептов, отсортированных по количеству просмотров и времени приготовления."""
     async with SessionLocal() as session:
         async with session.begin():
-            result = await session.execute(select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time))
+            result = await session.execute(
+                select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
+            )
             return result.scalars().all()
 
+
 @app.get('/recipes/{recipe_id}', response_model=RecipeOut)
-async def get_recipe_detail(recipe_id: int):
-    # """Получить детальную информацию о конкретном рецепте по идентификатору."""
-    # logger.info(f"Запрос детали рецепта: {recipe_id}")
+async def get_recipe_detail(recipe_id: int) -> RecipeOut:
+    """Получить детальную информацию о конкретном рецепте по идентификатору."""
     async with SessionLocal() as session:
         async with session.begin():
             recipe = await session.get(Recipe, recipe_id)
             if not recipe:
                 raise HTTPException(status_code=404, detail="Рецепт не найден")
-            recipe.views += 1
+            # корректно обработать возможное None в recipe.views
+            recipe.views = (recipe.views or 0) + 1
             await session.commit()
             return recipe
 
 
 @app.post('/recipes/', response_model=RecipeOut)
-async def create_recipe(recipe: RecipeIn):
+async def create_recipe(recipe: RecipeIn) -> RecipeOut:
     """Создать новый рецепт на основе предоставленных данных."""
     new_recipe = Recipe(**recipe.dict())
     async with SessionLocal() as session:
@@ -56,6 +61,5 @@ async def create_recipe(recipe: RecipeIn):
         except Exception as e:
             logger.error(f"Ошибка создания рецепта: {e}")
             raise HTTPException(status_code=400, detail=str(e))
-
 
 
