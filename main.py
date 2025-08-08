@@ -28,7 +28,7 @@ logger = logging.getLogger("app")
 
 @app.get("/recipes/", response_model=List[RecipeOut])
 async def get_recipes() -> list[Recipe]:
-    """Получить список всех рецептов, отсортированных по количеству просмотров и времени приготовления."""
+    """Получить список всех рецептов"""
     async with SessionLocal() as session:
         async with session.begin():
             result = await session.execute(
