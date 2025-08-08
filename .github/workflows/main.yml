@@ -29,20 +29,30 @@ jobs:
 
       - name: Run mypy
         run: |
-          mypy --python-version 3.12 .
+          mypy --python-version 3.12 \
+               --exclude '(^|/)(\.venv|venv|env|new_env|\.tox|build|dist|__pycache__|site-packages)(/|$)' \
+               .
 
       - name: Run black
         run: |
-          black --diff --check .
+          black --diff --check \
+                --extend-exclude '(^|/)(\.venv|venv|env|new_env|\.tox|build|dist|__pycache__|site-packages)(/|$)' \
+                .
 
       - name: Run isort
         run: |
-          isort --check-only .
+          isort --check-only --profile black \
+                --skip .venv --skip venv --skip env --skip new_env \
+                --skip .tox --skip build --skip dist --skip .git \
+                --skip .mypy_cache --skip .pytest_cache --skip .ruff_cache \
+                --skip-glob '**/site-packages/**' \
+                --skip-glob '**/__pycache__/**' \
+                .
 
       - name: Run flake8
         run: |
-          flake8 .
+          flake8 --exclude .venv,venv,env,new_env,.tox,build,dist,__pycache__,.git .
 
       - name: Run pytest
         run: |
-          pytest --maxfail=1 --disable-warnings
+          pytest --maxfail=1 --disable-warningsп.
