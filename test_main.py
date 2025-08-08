@@ -1,14 +1,16 @@
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from main import app
 
 
 @pytest.mark.asyncio
 async def test_get_recipes():
+    transport = ASGITransport(app=app, lifespan="on")
     async with AsyncClient(
-        app=app, base_url="http://127.0.0.1:8000"
-    ) as client:  # noqa: E501
+        transport=transport,
+        base_url="http://testserver",
+    ) as client:
         response = await client.get("/recipes/")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
@@ -22,9 +24,11 @@ async def test_create_recipe():
         "ingredients": "Свекла, картофель, капуста, морковь, лук",
         "description": "Классический рецепт борща",
     }
+    transport = ASGITransport(app=app, lifespan="on")
     async with AsyncClient(
-        app=app, base_url="http://127.0.0.1:8000"
-    ) as client:  # noqa: E501
+        transport=transport,
+        base_url="http://testserver",
+    ) as client:
         response = await client.post("/recipes/", json=new_recipe)
         assert response.status_code == 200
         new_recipe = response.json()
@@ -41,14 +45,17 @@ async def test_get_recipe_detail():
         "description": "Освежающее летнее блюдо",
     }
 
+    transport = ASGITransport(app=app, lifespan="on")
     async with AsyncClient(
-        app=app, base_url="http://127.0.0.1:8000"
-    ) as client:  # noqa: E501
+        transport=transport,
+        base_url="http://testserver",
+    ) as client:
         create_response = await client.post("/recipes/", json=recipe_data)
         assert create_response.status_code == 200
         response_data = create_response.json()
         recipe_id = response_data.get("recipe_id")
         assert recipe_id is not None
+
         detail_response = await client.get(f"/recipes/{recipe_id}")
         assert detail_response.status_code == 200
         detail_data = detail_response.json()
