@@ -19,41 +19,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12.3'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+          # Если dev-инструменты не в requirements.txt, раскомментируйте:
+          # pip install black isort flake8 mypy pytest
 
       - name: Run mypy
         run: |
           mypy --python-version 3.12 \
-               --exclude '(^|/)(\.venv|venv|env|new_env|\.tox|build|dist|__pycache__|site-packages)(/|$)' \
+               --exclude '(^|/)(\.venv|venv|env|new_env|\.tox|build|dist|pycache|site-packages)(/|$)' \
                .
 
       - name: Run black
         run: |
-          black --diff --check \
-                --extend-exclude '(^|/)(\.venv|venv|env|new_env|\.tox|build|dist|__pycache__|site-packages)(/|$)' \
-                .
+          black --diff --check .
 
       - name: Run isort
         run: |
-          isort --check-only --profile black \
-                --skip .venv --skip venv --skip env --skip new_env \
-                --skip .tox --skip build --skip dist --skip .git \
-                --skip .mypy_cache --skip .pytest_cache --skip .ruff_cache \
-                --skip-glob '**/site-packages/**' \
-                --skip-glob '**/__pycache__/**' \
-                .
+          isort --check-only .
 
       - name: Run flake8
         run: |
-          flake8 --exclude .venv,venv,env,new_env,.tox,build,dist,__pycache__,.git .
+          flake8 .
 
       - name: Run pytest
         run: |
-          pytest --maxfail=1 --disable-warningsп.
+          pytest --maxfail=1 --disable-warnings -q

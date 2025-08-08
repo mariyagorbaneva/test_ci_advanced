@@ -1,0 +1,9 @@
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+extend-exclude = "(^|/)(\\.venv|venv|env|new_env|\\.tox|build|dist|pycache|site-packages)(/|$)"
+
+[tool.isort]
+profile = "black"
+skip = [".venv", "venv", "env", "new_env", ".tox", "build", "dist", ".git"]
+skip_glob = ["/site-packages/", "/__pycache__/"]
