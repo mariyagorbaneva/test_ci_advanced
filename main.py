@@ -2,9 +2,8 @@ import logging
 from contextlib import asynccontextmanager
 from typing import List
 
-import uvicorn
 from fastapi import FastAPI, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.future import select
 
 import models
