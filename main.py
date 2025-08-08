@@ -46,11 +46,9 @@ async def get_recipe_detail(recipe_id: int):
             if not recipe:
                 raise HTTPException(status_code=404, detail="Рецепт не найден")
 
-            # Безопасно инкрементируем даже если в БД было NULL
             current_views: int = 0 if recipe.views is None else recipe.views
             recipe.views = current_views + 1
 
-            # commit не нужен — он произойдёт при выходе из session.begin()
             return recipe
 
 

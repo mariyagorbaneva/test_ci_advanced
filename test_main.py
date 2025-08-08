@@ -54,7 +54,6 @@ async def test_get_recipe_detail():
             assert create_response.status_code == 200
             response_data = create_response.json()
 
-            # Поддержка обоих вариантов имени ключа идентификатора
             recipe_id = response_data.get("id") or response_data.get("recipe_id")
             assert recipe_id is not None
 
