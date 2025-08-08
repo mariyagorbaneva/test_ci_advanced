@@ -1,12 +1,14 @@
 [tool.black]
 line-length = 88
 target-version = ["py312"]
-extend-exclude = "(^|/)(\\.venv|venv|env|new_env|\\.tox|build|dist|pycache|site-packages)(/|$)"
+extend-exclude = "(^|/)(\\.venv|venv|env|new_env|\\.tox|build|dist|__pycache__|site-packages|\\.git)(/|$)"
 
 [tool.isort]
 profile = "black"
 line_length = 88
-known_first_party = ["database", "main", "test_main"]
 src_paths = ["."]
+known_first_party = ["database", "main", "models", "schemas", "test_main"]
+known_third_party = ["fastapi", "sqlalchemy", "pydantic", "uvicorn", "starlette"]
 skip = [".venv", "venv", "env", "new_env", ".tox", "build", "dist", ".git"]
-skip_glob = ["/site-packages/", "/__pycache__/"]
+skip_glob = ["**/__pycache__/**", "**/site-packages/**"]
+filter_files = true
