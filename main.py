@@ -12,6 +12,7 @@ import models
 
 SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
@@ -19,11 +20,12 @@ async def lifespan(app: FastAPI):
     yield
     await engine.dispose()
 
+
 app = FastAPI(lifespan=lifespan)
 logger = logging.getLogger("app")
 
 
-@app.get('/recipes/', response_model=List[RecipeOut])
+@app.get("/recipes/", response_model=List[RecipeOut])
 async def get_recipes() -> list[Recipe]:
     """Получить список всех рецептов, отсортированных по количеству просмотров и времени приготовления."""
     async with SessionLocal() as session:
@@ -35,7 +37,7 @@ async def get_recipes() -> list[Recipe]:
             return list(result.scalars().all())
 
 
-@app.get('/recipes/{recipe_id}', response_model=RecipeOut)
+@app.get("/recipes/{recipe_id}", response_model=RecipeOut)
 async def get_recipe_detail(recipe_id: int) -> Recipe:
     """Получить детальную информацию о конкретном рецепте по идентификатору."""
     async with SessionLocal() as session:
@@ -49,7 +51,7 @@ async def get_recipe_detail(recipe_id: int) -> Recipe:
             return recipe
 
 
-@app.post('/recipes/', response_model=RecipeOut)
+@app.post("/recipes/", response_model=RecipeOut)
 async def create_recipe(recipe: RecipeIn) -> Recipe:
     """Создать новый рецепт на основе предоставленных данных."""
     new_recipe = Recipe(**recipe.dict())
