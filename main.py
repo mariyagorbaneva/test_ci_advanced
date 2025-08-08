@@ -3,12 +3,13 @@ from contextlib import asynccontextmanager
 from typing import List
 
 from fastapi import FastAPI, HTTPException
-from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.future import select
+
+import models
+from database import engine
 from models import Recipe
 from schemas import RecipeIn, RecipeOut
-from database import engine
-import models
 
 SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 

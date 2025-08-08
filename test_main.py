@@ -1,7 +1,8 @@
 import pytest
 from httpx import AsyncClient
-from main import app
+
 from database import DB_URL
+from main import app
 
 
 @pytest.mark.asyncio
